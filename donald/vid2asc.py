@@ -12,6 +12,9 @@ import cv2
 import sys
 import numpy as np
 
+input_file = "R2D2.mp4"
+output_file = "R2D2_ascii.mp4"
+
 
 def sliding_window(image, windowSize):
     # slide a window across the image
@@ -60,19 +63,21 @@ def decode_fourcc(v):
 
 
 # Create input video stream
-cap = cv2.VideoCapture('../pixar.mp4')
+cap = cv2.VideoCapture(input_file)
 if (cap.isOpened() == False):
     print("Error opening input video stream or file")
+    exit()
 
 (cap_h, cap_w) = (int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)),
                   int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)))
 
 # Create an output video stream based on attributes of input
 fourcc = cv2.VideoWriter_fourcc(*decode_fourcc(cap.get(cv2.CAP_PROP_FOURCC)))
-out = cv2.VideoWriter('output.mp4', fourcc, cap.get(cv2.CAP_PROP_FPS),
+out = cv2.VideoWriter(output_file, fourcc, cap.get(cv2.CAP_PROP_FPS),
                       (cap_w, cap_h), False)
 if (out.isOpened() == False):
     print("Error opening input video stream or file")
+    exit()
 
 
 def generate_edge_frame(frame):
