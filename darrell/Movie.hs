@@ -324,6 +324,6 @@ playMovie screens = do
   mapM ( \ frame -> do 
     setCursorPosition 0 0 
     putStr frame
-    threadDelay 20000
+    threadDelay 17000
     ) frames
   return ()
