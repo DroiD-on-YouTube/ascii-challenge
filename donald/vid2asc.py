@@ -36,12 +36,21 @@ font = font_image[font_border_hw:(
 (font_tiles_y, font_tiles_x) = (int(font_h/font_tile_h), int(font_w/font_tile_w))
 font_tiles = font_tiles_y * font_tiles_x
 
+# Reduce the size to increase the match
+scale_percent = 25  # percent of original size
+half_w = int(font_tile_w * scale_percent / 100)
+half_h = int(font_tile_h * scale_percent / 100)
+half_dim = (half_w, half_h)
+
 # build a sequence of font tiles
 font_tile_seq = np.empty([font_tiles, font_tile_h, font_tile_w], np.uint8)
+font_half_tile_seq = np.empty([font_tiles, half_h, half_w], np.uint8)
 for (x, y, font_tile) in sliding_window(font, windowSize=(font_tile_h, font_tile_w)):
     (x_idx, y_idx) = (int(x/font_tile_w), int(y/font_tile_h))
     idx = (y_idx * font_tiles_x) + x_idx
     font_tile_seq[idx] = font_tile
+    font_half_tile_seq[idx] = cv2.resize(
+        font_tile, half_dim, interpolation=cv2.INTER_AREA)
 
 
 def decode_fourcc(v):
@@ -88,7 +97,10 @@ def generate_ascii_frame(frame):
         candidate = 0
         best_sum = sys.maxsize
         for i in range(font_tiles):
-            delta = frame_tile - font_tile_seq[i]
+            # resize to increase chances of a match
+            frame_half_tile = cv2.resize(
+                frame_tile, half_dim, interpolation=cv2.INTER_AREA)
+            delta = frame_half_tile - font_half_tile_seq[i]
             delta[delta > 0] = 1  # handle uint8 wraparound
             sum = int(np.sum(delta))
             if sum == 0:
