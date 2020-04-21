@@ -12,8 +12,8 @@ import cv2
 import sys
 import numpy as np
 
-input_file = "R2D2.mp4"
-output_file = "R2D2_ascii.mp4"
+input_file = "../pixar.mp4"
+output_file = "pixar_ascii.mp4"
 
 
 def sliding_window(image, windowSize):
@@ -40,7 +40,7 @@ font = font_image[font_border_hw:(
 font_tiles = font_tiles_y * font_tiles_x
 
 # Reduce the size to increase the match
-scale_percent = 25  # percent of original size
+scale_percent = 40  # percent of original size
 half_w = int(font_tile_w * scale_percent / 100)
 half_h = int(font_tile_h * scale_percent / 100)
 half_dim = (half_w, half_h)
